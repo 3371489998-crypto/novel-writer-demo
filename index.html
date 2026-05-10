@@ -30,29 +30,47 @@
       background: rgba(0,0,0,0.72);
       display: flex; align-items: center; justify-content: center;
       animation: fadeIn 0.3s ease;
+      /* 移动端：可滚动 */ overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .contact-modal {
       background: #fff;
       border-radius: 16px;
-      padding: 32px 28px 24px;
-      max-width: 420px; width: 90%;
+      padding: 28px 20px 20px;
+      max-width: 400px; width: 92%;
       text-align: center;
       box-shadow: 0 24px 64px rgba(0,0,0,0.35);
       position: relative;
       animation: slideUp 0.35s ease;
+      /* 移动端适应小屏 */ max-height: 95vh; overflow-y: auto;
     }
     @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    .contact-modal .close-btn {
-      position: absolute; top: 12px; right: 16px;
-      background: #f1f5f9; border: none; border-radius: 50%;
-      width: 32px; height: 32px; font-size: 18px; color: #64748b;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
+    /* 顶部关闭条 — 大触控区域 */
+    .close-bar {
+      display: flex; align-items: center; justify-content: flex-end;
+      margin-bottom: 6px;
     }
-    .contact-modal .close-btn:hover { background: #e2e8f0; }
+    .contact-modal .close-btn {
+      background: #f1f5f9; border: none; border-radius: 22px;
+      min-width: 44px; min-height: 44px; /* 满足 44px 触控标准 */
+      font-size: 20px; color: #64748b;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s; padding: 0 14px;
+    }
+    .contact-modal .close-btn:hover, .contact-modal .close-btn:active { background: #e2e8f0; }
+
+    /* 底部大按钮 */
+    .enter-btn {
+      display: block; width: 100%; margin-top: 16px;
+      padding: 14px 0; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #fff; font-size: 17px; font-weight: 700;
+      cursor: pointer; letter-spacing: 2px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .enter-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
     .contact-modal h2 {
       margin: 0 0 6px; font-size: 22px; color: #0f172a;
@@ -129,9 +147,11 @@
 </head>
 <body>
   <!-- 联系弹窗 -->
-  <div id="contact-overlay" class="contact-overlay">
+  <div id="contact-overlay" class="contact-overlay" onclick="if(event.target===this)this.remove()">
     <div class="contact-modal">
-      <button class="close-btn" onclick="document.getElementById('contact-overlay').remove()">✕</button>
+      <div class="close-bar">
+        <button class="close-btn" onclick="document.getElementById('contact-overlay').remove()">✕ 关闭</button>
+      </div>
 
       <h2>📖 AI 小说创作工作台</h2>
       <p class="subtitle">番茄小说作者专用 · AI 辅助创作工具</p>
@@ -160,9 +180,7 @@
         </div>
       </div>
 
-      <div style="margin-top:12px;font-size:12px;color:#94a3b8;">
-        点击右上角 ✕ 关闭 · 开始体验演示版
-      </div>
+      <button class="enter-btn" onclick="document.getElementById('contact-overlay').remove()">🚀 开始体验演示版</button>
     </div>
   </div>
 
