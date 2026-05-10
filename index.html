@@ -12,7 +12,6 @@
     (function() {
       var STORAGE_KEY = "novel-writer-frontend-v1";
       if (!localStorage.getItem(STORAGE_KEY)) {
-        // 让应用自己用默认数据初始化 — 不预填避免结构冲突
         console.log("[demo] localStorage 未初始化，应用将自动填充示例数据。");
       }
     })();
@@ -25,29 +24,155 @@
   <link rel="stylesheet" href="assets/index-vApeFGn1.css" />
 
   <style>
-    /* 演示模式专属样式 */
-    :root {
-      --demo-accent: #f59e0b;
+    /* 弹窗遮罩 */
+    .contact-overlay {
+      position: fixed; inset: 0; z-index: 100000;
+      background: rgba(0,0,0,0.72);
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 0.3s ease;
     }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .contact-modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 28px 24px;
+      max-width: 420px; width: 90%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+      position: relative;
+      animation: slideUp 0.35s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .contact-modal .close-btn {
+      position: absolute; top: 12px; right: 16px;
+      background: #f1f5f9; border: none; border-radius: 50%;
+      width: 32px; height: 32px; font-size: 18px; color: #64748b;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .contact-modal .close-btn:hover { background: #e2e8f0; }
+
+    .contact-modal h2 {
+      margin: 0 0 6px; font-size: 22px; color: #0f172a;
+    }
+    .contact-modal .subtitle {
+      font-size: 13px; color: #94a3b8; margin-bottom: 18px;
+    }
+
+    /* QQ 大字 */
+    .qq-big {
+      font-size: 36px; font-weight: 900; color: #0f172a;
+      letter-spacing: 3px; margin: 8px 0;
+      font-family: "SF Mono", "Consolas", "Courier New", monospace;
+    }
+    .qq-label {
+      font-size: 12px; color: #f59e0b; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase;
+    }
+    .qq-qr {
+      width: 140px; height: 140px; margin: 14px auto;
+      display: block; border: 2px solid #e2e8f0; border-radius: 10px;
+      padding: 6px; background: #fff;
+    }
+
+    /* 分割线 */
+    .divider {
+      height: 1px; background: #e2e8f0; margin: 18px 0;
+    }
+
+    /* 价格 */
+    .price-section {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border-radius: 10px; padding: 14px 16px; margin: 12px 0;
+    }
+    .price-big {
+      font-size: 28px; font-weight: 900; color: #d97706;
+    }
+    .price-desc {
+      font-size: 12px; color: #92400e; margin-top: 4px;
+      line-height: 1.6;
+    }
+    .price-tag {
+      display: inline-block; background: #f59e0b; color: #fff;
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; margin-top: 6px;
+    }
+
+    /* 抖音 */
+    .douyin-section {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin: 10px 0; padding: 10px 0;
+      border-top: 1px dashed #e2e8f0; border-bottom: 1px dashed #e2e8f0;
+    }
+    .douyin-icon {
+      width: 36px; height: 36px; background: #000; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: #fff; font-weight: 900;
+      flex-shrink: 0;
+    }
+    .douyin-text {
+      text-align: left; font-size: 13px; line-height: 1.5;
+    }
+    .douyin-name { font-weight: 700; color: #0f172a; }
+    .douyin-id { color: #64748b; font-size: 12px; }
+
+    /* 演示水印 */
     .demo-watermark {
       position: fixed;
-      bottom: 12px;
-      right: 16px;
-      z-index: 99998;
-      color: rgba(245, 158, 11, 0.4);
-      font-size: 11px;
-      pointer-events: none;
-      user-select: none;
+      bottom: 12px; right: 16px; z-index: 99998;
+      color: rgba(245, 158, 11, 0.4); font-size: 11px;
+      pointer-events: none; user-select: none;
     }
   </style>
 </head>
 <body>
+  <!-- 联系弹窗 -->
+  <div id="contact-overlay" class="contact-overlay">
+    <div class="contact-modal">
+      <button class="close-btn" onclick="document.getElementById('contact-overlay').remove()">✕</button>
+
+      <h2>📖 AI 小说创作工作台</h2>
+      <p class="subtitle">番茄小说作者专用 · AI 辅助创作工具</p>
+
+      <!-- QQ -->
+      <div class="qq-label">▎ 联系 QQ</div>
+      <div class="qq-big">3371489998</div>
+      <img class="qq-qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAAEiAQMAAABncE31AAAABlBMVEUAAAD///+l2Z/dAAAAAnRSTlP//8i138cAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAEPSURBVGiB7dhRDoMgDMbxJh7AI3F1j+QBljBpqTC3xD1Qki1/HobTn3v5shaQ/M0QFAqFQv2FkjqWnLf1IZJ2v5NQ0cq+7EUdj+yqe4CKVCWSdDwTsYTK1REYaqLSf4cmhJquFNwmhBqodGr16K5+ocapsyNbOHd9GzVOtVG7wvUuKkxZOOc4lkS1RqEmqDWfGwAH2/qWEGq8qrRVppy7D1SksnpUYrr0Zv8BVKCyeiTiHdkLVUIFqy6LshCybdjnyoQarLwVL640MNQUlXSyhqA1yo88EypcvZy41SPP9jpqhvINgKqH1y3UDNWtRLvFESpS6eTKErKsUNGqdeT+2G25JIQKUHcDhUKhUL+unhnPF60VlRLBAAAAAElFTkSuQmCC" alt="QQ二维码" />
+
+      <!-- 价格 -->
+      <div class="price-section">
+        <div class="price-big">¥59</div>
+        <div style="font-weight:700;color:#92400e;font-size:14px;">统一售价 · 永久使用</div>
+        <div class="price-desc">一次购买，永久激活<br>后续升级维护 <b>永久免费</b></div>
+        <div class="price-tag">🔥 买断制 · 无月费</div>
+      </div>
+
+      <!-- 抖音 -->
+      <div class="divider"></div>
+      <div class="douyin-section">
+        <div class="douyin-icon">♪</div>
+        <div class="douyin-text">
+          <div class="douyin-name">📱 抖音关注：深度思考</div>
+          <div class="douyin-id">抖音号：44232254497</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">关注了解软件更新 & 创作技巧</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;font-size:12px;color:#94a3b8;">
+        点击右上角 ✕ 关闭 · 开始体验演示版
+      </div>
+    </div>
+  </div>
+
+  <!-- React 根节点 -->
   <div id="root"></div>
 
   <!-- 右下角水印 -->
   <div class="demo-watermark">演示版 · AI 内容为预设展示数据</div>
 
-  <!-- 4️⃣ 应用 bundle（最后加载） -->
+  <!-- 4️⃣ 应用 bundle -->
   <script type="module" crossorigin src="assets/index-DamQccVa.js"></script>
 </body>
 </html>
