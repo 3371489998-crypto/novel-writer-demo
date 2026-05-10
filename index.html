@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 小说创作工作台 · 演示版</title>
+  <meta name="description" content="AI 小说创作工作台 — 网页演示版。展示全部功能界面，AI 响应为预设演示内容，不可用于实际写作。" />
+  <meta name="robots" content="noindex" />
+
+  <!-- 1️⃣ 预填演示数据（localStorage） -->
+  <script>
+    (function() {
+      var STORAGE_KEY = "novel-writer-frontend-v1";
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        // 让应用自己用默认数据初始化 — 不预填避免结构冲突
+        console.log("[demo] localStorage 未初始化，应用将自动填充示例数据。");
+      }
+    })();
+  </script>
+
+  <!-- 2️⃣ 注入 mock API（必须在应用 bundle 之前） -->
+  <script src="demo-mock.js"></script>
+
+  <!-- 3️⃣ 应用样式 -->
+  <link rel="stylesheet" href="assets/index-vApeFGn1.css" />
+
+  <style>
+    /* 演示模式专属样式 */
+    :root {
+      --demo-accent: #f59e0b;
+    }
+    .demo-watermark {
+      position: fixed;
+      bottom: 12px;
+      right: 16px;
+      z-index: 99998;
+      color: rgba(245, 158, 11, 0.4);
+      font-size: 11px;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- 右下角水印 -->
+  <div class="demo-watermark">演示版 · AI 内容为预设展示数据</div>
+
+  <!-- 4️⃣ 应用 bundle（最后加载） -->
+  <script type="module" crossorigin src="assets/index-DamQccVa.js"></script>
+</body>
+</html>
